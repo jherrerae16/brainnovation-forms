@@ -115,6 +115,30 @@ textarea.finp{min-height:110px;resize:vertical;line-height:1.6}
 .del-ic{width:30px;height:30px;background:var(--blue-light);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px}
 .del-txt{font-size:13px;color:var(--gray-700);font-weight:500;line-height:1.4}
 
+/* SUCCESS — CTA bloque pagina 10 framework */
+.ty-section{max-width:900px;margin:0 auto 36px;text-align:left}
+.ty-section-title{font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--gray-500);text-transform:uppercase;text-align:center;margin-bottom:18px}
+.ty-intro{font-size:14px;color:var(--gray-500);max-width:680px;margin:0 auto 28px;line-height:1.65;text-align:center}
+.fric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:32px}
+.fric{background:var(--white);border:1.5px solid var(--gray-100);border-radius:var(--r-md);padding:18px;box-shadow:var(--shadow)}
+.fric-h{font-size:11px;font-weight:700;letter-spacing:1px;color:var(--blue);text-transform:uppercase;margin-bottom:10px}
+.fric-d{font-size:12.5px;color:var(--gray-700);line-height:1.5;margin-bottom:12px}
+.fric-a{font-size:12px;color:var(--dark);font-weight:600;line-height:1.45;padding-top:10px;border-top:1px solid var(--gray-100)}
+.steps-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:32px}
+.step{background:var(--white);border:1.5px solid var(--gray-100);border-radius:var(--r-md);padding:16px;box-shadow:var(--shadow)}
+.step-n{font-size:18px;font-weight:800;color:var(--blue);margin-bottom:6px}
+.step-t{font-size:13px;font-weight:700;color:var(--dark);margin-bottom:6px;line-height:1.3}
+.step-d{font-size:12px;color:var(--gray-500);line-height:1.45}
+.changes-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:780px;margin:0 auto 36px;text-align:left}
+.changes-col h4{font-size:11px;font-weight:700;letter-spacing:1px;color:var(--gray-500);text-transform:uppercase;margin-bottom:12px}
+.changes-col ul{list-style:none;padding:0;margin:0}
+.changes-col li{font-size:13px;color:var(--gray-700);padding:6px 0 6px 22px;position:relative;line-height:1.45}
+.changes-col li::before{content:'→';position:absolute;left:0;color:var(--blue);font-weight:700}
+.changes-col.outcomes li::before{content:'✓';color:#16a34a}
+@media(max-width:640px){
+  .fric-grid,.steps-grid,.changes-grid{grid-template-columns:1fr}
+}
+
 /* OVERLAY */
 .ov{display:none;position:fixed;inset:0;background:rgba(255,255,255,.85);backdrop-filter:blur(4px);z-index:200;flex-direction:column;align-items:center;justify-content:center;gap:14px}
 .ov.show{display:flex}
@@ -526,12 +550,76 @@ textarea.finp{min-height:110px;resize:vertical;line-height:1.6}
     </div>
     <h2>Diagnóstico <span id="ty-n">enviado</span>.</h2>
     <p>Acabas de mapear las fricciones que están pagando un costo silencioso en tu práctica. Te enviamos el mapa estratégico personalizado en 5–7 días hábiles.</p>
-    <div class="del-grid">
-      <div class="del"><div class="del-ic">🗺️</div><div class="del-txt">Mapa de fricciones clínicas y operativas</div></div>
-      <div class="del"><div class="del-ic">🤖</div><div class="del-txt">Matriz de oportunidades de IA aplicada</div></div>
-      <div class="del"><div class="del-ic">📋</div><div class="del-txt">Roadmap estratégico priorizado</div></div>
-      <div class="del"><div class="del-ic">🚀</div><div class="del-txt">Propuesta de implementación #1</div></div>
+
+    <div class="ty-section">
+      <div class="ty-section-title">Lo que acabamos de mapear juntos</div>
+      <p class="ty-intro">Todo lo que describiste — los procesos que dependen de personas, las fricciones que se normalizaron, los pacientes que se pierden en el funnel, el seguimiento post-op manual, la información clínica que no se ve en tiempo real — tiene nombre, tiene costo, y tiene solución estructurada.</p>
+      <div class="fric-grid">
+        <div class="fric">
+          <div class="fric-h">Fricción operacional</div>
+          <div class="fric-d">Procesos que dependen de personas clave, ruta del paciente que se fragmenta, manualidad que no escala.</div>
+          <div class="fric-a">→ Se puede estructurar, automatizar y liberar.</div>
+        </div>
+        <div class="fric">
+          <div class="fric-h">Opacidad clínica</div>
+          <div class="fric-d">Información sobre pacientes, funnel y outcomes que no está disponible cuando se necesita.</div>
+          <div class="fric-a">→ Se puede integrar, visualizar y anticipar.</div>
+        </div>
+        <div class="fric">
+          <div class="fric-h">Límite de escala</div>
+          <div class="fric-d">Estructuras que funcionan hoy pero se romperían si la práctica crece o suma especialistas.</div>
+          <div class="fric-a">→ Se puede diseñar para el siguiente nivel.</div>
+        </div>
+      </div>
     </div>
+
+    <div class="ty-section">
+      <div class="ty-section-title">El siguiente paso — cómo convertimos esto en un plan concreto</div>
+      <div class="steps-grid">
+        <div class="step">
+          <div class="step-n">01</div>
+          <div class="step-t">Síntesis del diagnóstico</div>
+          <div class="step-d">Consolidamos los patrones en un mapa estratégico de fricciones y oportunidades de la práctica clínica.</div>
+        </div>
+        <div class="step">
+          <div class="step-n">02</div>
+          <div class="step-t">Mapa IA aplicada</div>
+          <div class="step-d">Cruzamos el diagnóstico con soluciones concretas de IA para los cuellos de botella clínicos y operativos reales.</div>
+        </div>
+        <div class="step">
+          <div class="step-n">03</div>
+          <div class="step-t">Roadmap estratégico</div>
+          <div class="step-d">Plan priorizado: quick wins, iniciativas de mediano plazo y visión de escalabilidad clínica.</div>
+        </div>
+        <div class="step">
+          <div class="step-n">04</div>
+          <div class="step-t">Propuesta de implementación</div>
+          <div class="step-d">Alcance, metodología, inversión y retorno esperado de las iniciativas más relevantes para tu práctica.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="changes-grid">
+      <div class="changes-col">
+        <h4>Lo que recibes como entregable</h4>
+        <ul>
+          <li>Mapa de fricciones clínicas y operativas</li>
+          <li>Matriz de oportunidades de IA aplicada</li>
+          <li>Roadmap estratégico priorizado</li>
+          <li>Quick wins + propuesta de implementación</li>
+        </ul>
+      </div>
+      <div class="changes-col outcomes">
+        <h4>Lo que cambia en la práctica</h4>
+        <ul>
+          <li>Operación más estructurada y menos frágil</li>
+          <li>Decisiones clínicas con datos reales, no intuición</li>
+          <li>Crecimiento que no se rompe al escalar</li>
+          <li>IA como ventaja clínica real, no como moda</li>
+        </ul>
+      </div>
+    </div>
+
     <a href="https://brainnovation.ai" class="btn">Volver a Brainnovation <span class="arr">↗</span></a>
   </div>
 </div>
