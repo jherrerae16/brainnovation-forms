@@ -545,6 +545,7 @@ const FORM_ID    = "bariatrico-v1";              // ID único del formulario
 // ============================================================
 
 const A = {}; // respuestas acumuladas
+const BACKUP_KEY = 'brainnovation_assessment_pending';
 let cur = 0;
 
 function goTo(n){
@@ -598,14 +599,34 @@ async function send(){
   };
 
   try{
-    await fetch(SHEETS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    saveLocalBackup(payload);
+    const res = await fetch(SHEETS_URL,{
+      method:'POST',
+      mode:'cors',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify(payload)
+    });
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    clearLocalBackup(payload.timestamp);
     document.getElementById('ov').classList.remove('show');
     goTo(17);
   }catch(e){
+    console.error('No se pudo guardar el formulario:',e,payload);
     document.getElementById('ov').classList.remove('show');
     document.getElementById('btnSend').disabled=false;
-    toast('Error al enviar. Intenta de nuevo.',1);
+    toast('No se pudo guardar. Revisa la configuración del Google Apps Script.',1);
   }
+}
+
+function saveLocalBackup(payload){
+  const pending = JSON.parse(localStorage.getItem(BACKUP_KEY) || '[]');
+  pending.push(payload);
+  localStorage.setItem(BACKUP_KEY,JSON.stringify(pending));
+}
+
+function clearLocalBackup(timestamp){
+  const pending = JSON.parse(localStorage.getItem(BACKUP_KEY) || '[]');
+  localStorage.setItem(BACKUP_KEY,JSON.stringify(pending.filter(item=>item.timestamp!==timestamp)));
 }
 
 // Toast
