@@ -607,6 +607,8 @@ async function send(){
       body:JSON.stringify(payload)
     });
     if(!res.ok) throw new Error('HTTP '+res.status);
+    const result = await res.json();
+    if(!result.ok) throw new Error(result.error || 'Respuesta inválida del servidor');
     clearLocalBackup(payload.timestamp);
     document.getElementById('ov').classList.remove('show');
     goTo(17);
