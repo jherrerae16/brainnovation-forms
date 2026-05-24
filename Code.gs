@@ -25,7 +25,7 @@ const DRIVE_FOLDER_ID = "1Y0aUP5gr5wdOAqRXo-PGy7HjWWeJ-6PK";
 // ── Email de notificación ───────────────────────────────────
 // Por defecto usa el email del dueño del script.
 // Puedes cambiar por: "jc@brainnovation.ai"
-const NOTIFY_EMAIL = Session.getActiveUser().getEmail();
+const NOTIFY_EMAIL = "jherrerae16@gmail.com";
 
 
 // ============================================================
