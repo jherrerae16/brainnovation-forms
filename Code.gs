@@ -20,7 +20,7 @@
 // Deja en "" para guardar en la raíz de Drive,
 // o pon el ID de una carpeta específica:
 // (Drive → carpeta → URL → el ID es el string largo en la URL)
-const DRIVE_FOLDER_ID = "";
+const DRIVE_FOLDER_ID = "1Y0aUP5gr5wdOAqRXo-PGy7HjWWeJ-6PK";
 
 // ── Email de notificación ───────────────────────────────────
 // Por defecto usa el email del dueño del script.
