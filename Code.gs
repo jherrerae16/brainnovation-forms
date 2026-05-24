@@ -245,16 +245,11 @@ function generateDoc(data) {
 
   const docTitle = `Diagnóstico · ${nombre}${practica ? " · " + practica : ""} · ${fecha}`;
 
-  // Crear el Doc
-  let doc;
+  // Crear el Doc y moverlo a la carpeta destino
+  const doc = DocumentApp.create(docTitle);
   if (DRIVE_FOLDER_ID) {
     const folder = DriveApp.getFolderById(DRIVE_FOLDER_ID);
-    const file   = folder.createFile(
-      Utilities.newBlob("", "application/vnd.google-apps.document", docTitle)
-    );
-    doc = DocumentApp.openById(file.getId());
-  } else {
-    doc = DocumentApp.create(docTitle);
+    DriveApp.getFileById(doc.getId()).moveTo(folder);
   }
 
   const body = doc.getBody();
