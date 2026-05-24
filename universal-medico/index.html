@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Next AI Tech · Phase 1 Healthcare Assessment</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue:#1a7fe8;--blue-dark:#1265c4;--blue-light:#e8f2fd;
+  --teal:#00bcd4;--dark:#111827;--gray-700:#374151;
+  --gray-500:#6b7280;--gray-300:#d1d5db;--gray-100:#f3f4f6;
+  --white:#ffffff;--dot:rgba(26,127,232,0.1);
+  --shadow:0 4px 24px rgba(0,0,0,0.07);
+  --r-lg:18px;--r-md:12px;--r-pill:100px;
+  --font:'Inter',system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--white);color:var(--dark);min-height:100vh;overflow-x:hidden}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--gray-100);padding:0 40px;height:68px;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-icon{width:34px;height:34px;background:linear-gradient(135deg,var(--blue),var(--teal));border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px}
+.logo-text{font-size:17px;font-weight:700;color:var(--dark);letter-spacing:-0.3px}
+.logo-text span{color:var(--blue)}
+.nav-pill{background:var(--dark);border-radius:var(--r-pill);padding:6px;display:flex;gap:2px}
+.nav-pill a{padding:7px 18px;font-size:13px;font-weight:500;color:rgba(255,255,255,0.65);border-radius:var(--r-pill);text-decoration:none;transition:all .2s}
+.nav-pill a:hover,.nav-pill a.on{background:rgba(255,255,255,0.14);color:#fff}
+
+/* PROGRESS */
+.prog-wrap{height:3px;background:var(--gray-100);position:sticky;top:68px;z-index:99}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--teal));transition:width .5s cubic-bezier(.4,0,.2,1);border-radius:0 3px 3px 0}
+
+/* SCREENS */
+.screen{display:none}.screen.active{display:block}
+
+/* WELCOME */
+.welcome{min-height:calc(100vh - 71px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:60px 24px;position:relative;overflow:hidden}
+.welcome::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,var(--dot) 1.5px,transparent 1.5px);background-size:22px 22px}
+.welcome>*{position:relative;z-index:1}
+.badge{display:inline-flex;align-items:center;gap:7px;background:var(--blue-light);color:var(--blue);font-size:13px;font-weight:600;padding:6px 16px;border-radius:var(--r-pill);margin-bottom:24px}
+.badge::before{content:'';width:7px;height:7px;background:var(--blue);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)}}
+.welcome h1{font-size:clamp(32px,5vw,58px);font-weight:800;line-height:1.1;letter-spacing:-1.5px;color:var(--dark);max-width:720px;margin-bottom:18px}
+.welcome h1 em{font-style:normal;color:var(--blue)}
+.welcome p{font-size:17px;color:var(--gray-500);max-width:540px;line-height:1.65;margin-bottom:36px}
+.pill-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:36px}
+.pill{background:var(--white);border:1.5px solid var(--gray-300);color:var(--gray-700);padding:7px 16px;border-radius:var(--r-pill);font-size:13px;font-weight:500}
+.btn{display:inline-flex;align-items:center;gap:8px;background:var(--blue);color:#fff;font-size:15px;font-weight:600;padding:15px 34px;border-radius:var(--r-pill);border:none;cursor:pointer;transition:all .2s;font-family:var(--font);text-decoration:none}
+.btn:hover{background:var(--blue-dark);transform:translateY(-2px);box-shadow:0 8px 24px rgba(26,127,232,.3)}
+.btn .arr{font-size:17px;transition:transform .2s}
+.btn:hover .arr{transform:translate(2px,-2px)}
+.meta{margin-top:18px;font-size:12px;color:var(--gray-300)}
+
+/* Q SCREEN */
+.qs{max-width:740px;margin:0 auto;padding:48px 24px 72px;min-height:calc(100vh - 71px);display:flex;flex-direction:column}
+.sc-content{flex:1}
+.blk-tag{display:inline-flex;align-items:center;gap:6px;background:var(--blue-light);color:var(--blue);font-size:11px;font-weight:700;padding:5px 13px;border-radius:var(--r-pill);margin-bottom:18px;letter-spacing:.6px;text-transform:uppercase}
+.q-title{font-size:clamp(19px,3vw,26px);font-weight:700;line-height:1.3;letter-spacing:-.4px;color:var(--dark);margin-bottom:9px}
+.q-sub{font-size:14px;color:var(--gray-500);line-height:1.6;margin-bottom:24px}
+
+/* Insight */
+.insight{background:var(--blue-light);border-left:3px solid var(--blue);border-radius:0 var(--r-md) var(--r-md) 0;padding:13px 17px;margin-bottom:22px;font-size:13.5px;color:var(--gray-700);line-height:1.6}
+.insight strong{display:block;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:4px}
+
+/* Block intro */
+.blk-intro{background:var(--white);border:1.5px solid var(--gray-100);border-radius:var(--r-lg);padding:26px 30px;margin-bottom:24px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.blk-intro::after{content:'';position:absolute;right:-16px;bottom:-16px;width:110px;height:110px;background-image:radial-gradient(circle,var(--dot) 1.5px,transparent 1.5px);background-size:14px 14px}
+.blk-num{font-size:52px;font-weight:800;letter-spacing:-3px;color:var(--blue-light);line-height:1;margin-bottom:6px}
+.blk-name{font-size:19px;font-weight:700;color:var(--dark);margin-bottom:7px}
+.blk-tag2{font-size:13px;color:var(--gray-500);line-height:1.6}
+
+/* Options */
+.opts-lbl{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray-500);margin-bottom:10px}
+.opts{display:flex;flex-direction:column;gap:7px;margin-bottom:22px}
+.opt{display:flex;align-items:center;gap:13px;padding:13px 17px;border:1.5px solid var(--gray-300);border-radius:var(--r-md);cursor:pointer;transition:all .15s;background:var(--white);font-size:14px;color:var(--gray-700);font-weight:500;user-select:none}
+.opt:hover{border-color:var(--blue);background:var(--blue-light);color:var(--blue)}
+.opt.sel{border-color:var(--blue);background:var(--blue-light);color:var(--blue-dark)}
+.chk{width:19px;height:19px;border:2px solid var(--gray-300);border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;background:var(--white)}
+.opt.sel .chk{background:var(--blue);border-color:var(--blue)}
+.chk svg{display:none}.opt.sel .chk svg{display:block}
+.opt.radio .chk{border-radius:50%}
+
+/* Fields */
+.fwrap{margin-bottom:18px}
+.flbl{font-size:13px;font-weight:600;color:var(--gray-700);margin-bottom:7px;display:block}
+.finp{width:100%;padding:13px 17px;border:1.5px solid var(--gray-300);border-radius:var(--r-md);font-size:15px;font-family:var(--font);color:var(--dark);background:var(--white);transition:border-color .15s,box-shadow .15s;outline:none}
+.finp:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(26,127,232,.1)}
+.finp::placeholder{color:var(--gray-300)}
+textarea.finp{min-height:110px;resize:vertical;line-height:1.6}
+select.finp{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:44px;cursor:pointer}
+
+/* Grid 2 cols */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+/* Footer nav */
+.qfoot{margin-top:auto;padding-top:28px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--gray-100)}
+.btn-back{display:inline-flex;align-items:center;gap:5px;background:none;border:1.5px solid var(--gray-300);color:var(--gray-500);padding:11px 20px;border-radius:var(--r-pill);font-size:14px;font-weight:500;cursor:pointer;transition:all .15s;font-family:var(--font)}
+.btn-back:hover{border-color:var(--gray-500);color:var(--dark)}
+.btn-next{display:inline-flex;align-items:center;gap:7px;background:var(--blue);color:#fff;border:none;padding:12px 26px;border-radius:var(--r-pill);font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;font-family:var(--font)}
+.btn-next:hover{background:var(--blue-dark);transform:translateY(-1px);box-shadow:0 6px 20px rgba(26,127,232,.3)}
+.btn-next:disabled{background:var(--gray-300);cursor:not-allowed;transform:none;box-shadow:none}
+.ctr{font-size:12px;color:var(--gray-300);font-weight:500}
+
+/* CTA CLOSING SCREEN */
+.cta-screen{min-height:calc(100vh - 71px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:60px 24px;position:relative;overflow:hidden;background:var(--dark)}
+.cta-screen::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(26,127,232,0.08) 1.5px,transparent 1.5px);background-size:22px 22px}
+.cta-screen>*{position:relative;z-index:1}
+.cta-mapped{font-size:12px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--blue);margin-bottom:28px}
+.cta-title{font-size:clamp(22px,4vw,38px);font-weight:800;letter-spacing:-1px;color:#fff;line-height:1.2;max-width:680px;margin-bottom:16px}
+.cta-title em{font-style:normal;color:var(--blue)}
+.cta-sub{font-size:16px;color:rgba(255,255,255,0.55);max-width:500px;line-height:1.65;margin-bottom:40px;font-style:italic}
+.cta-pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:680px;width:100%;margin-bottom:40px}
+.cta-pillar{background:rgba(255,255,255,0.05);border:1px solid rgba(26,127,232,0.25);border-radius:var(--r-md);padding:18px 14px;text-align:center}
+.cta-pillar-name{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--blue);margin-bottom:8px}
+.cta-pillar-arrow{font-size:13px;color:rgba(255,255,255,0.4);font-style:italic;line-height:1.5}
+.cta-question{font-size:17px;color:#fff;font-weight:500;max-width:560px;margin-bottom:28px;line-height:1.55}
+.cta-question em{font-style:italic;color:rgba(255,255,255,0.6)}
+.cta-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:680px;width:100%;margin-bottom:36px}
+.cta-step{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:var(--r-md);padding:16px 12px;text-align:left}
+.cta-step-num{font-size:24px;font-weight:800;color:rgba(26,127,232,0.4);line-height:1;margin-bottom:6px}
+.cta-step-name{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:5px}
+.cta-step-desc{font-size:11px;color:rgba(255,255,255,0.35);line-height:1.5}
+.btn-cta{display:inline-flex;align-items:center;gap:8px;background:var(--blue);color:#fff;font-size:16px;font-weight:700;padding:17px 38px;border-radius:var(--r-pill);border:none;cursor:pointer;transition:all .2s;font-family:var(--font);text-decoration:none;margin-bottom:14px}
+.btn-cta:hover{background:var(--blue-dark);transform:translateY(-2px);box-shadow:0 10px 30px rgba(26,127,232,.4)}
+.cta-footer{font-size:12px;color:rgba(255,255,255,0.2);letter-spacing:1px}
+
+/* OVERLAY */
+.ov{display:none;position:fixed;inset:0;background:rgba(255,255,255,.85);backdrop-filter:blur(4px);z-index:200;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+.ov.show{display:flex}
+.spin{width:42px;height:42px;border:3px solid var(--gray-100);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ov p{font-size:14px;color:var(--gray-500);font-weight:500}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--dark);color:#fff;padding:13px 20px;border-radius:var(--r-md);font-size:13px;font-weight:500;transform:translateY(70px);opacity:0;transition:all .3s cubic-bezier(.4,0,.2,1);z-index:300}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.err{background:#dc2626}
+
+/* SVG check helper */
+.chk-svg{display:none}
+.opt.sel .chk-svg{display:block}
+
+@media(max-width:640px){
+  .nav{padding:0 18px}.nav-pill{display:none}
+  .qs{padding:28px 18px 56px}
+  .grid2{grid-template-columns:1fr}
+  .cta-pillars,.cta-steps{grid-template-columns:1fr 1fr}
+  .welcome h1{font-size:30px}
+}
+</style>
+</head>
+<body>
+
+<div class="ov" id="ov"><div class="spin"></div><p>Guardando respuestas...</p></div>
+<div class="toast" id="toast"></div>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="https://nextaitech.com" class="logo">
+    <div class="logo-icon">⚡</div>
+    <span class="logo-text">Next <span>AI</span> Tech</span>
+  </a>
+  <div class="nav-pill">
+    <a href="https://nextaitech.com">Home</a>
+    <a href="#" class="on">Assessment</a>
+  </div>
+</nav>
+<div class="prog-wrap"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     S0 · WELCOME
+═══════════════════════════════════════════════════════════ -->
+<div class="screen active" id="s0">
+  <div class="welcome">
+    <div class="badge">Phase 1 · Healthcare Edition</div>
+    <h1>AI-Powered Clinical &<br><em>Practice Operations Assessment</em></h1>
+    <p>Un mapa estratégico de cómo funciona realmente tu práctica clínica — las fricciones del día a día, las dependencias del equipo, y las oportunidades concretas para liberar tiempo clínico y escalar.</p>
+    <div class="pill-row">
+      <span class="pill">⚙️ Operación Clínica</span>
+      <span class="pill">🔄 Experiencia del Paciente</span>
+      <span class="pill">📊 Inteligencia Clínica</span>
+    </div>
+    <button class="btn" onclick="goTo(1)">Comenzar diagnóstico <span class="arr">↗</span></button>
+    <p class="meta">⏱ 25–40 minutos · Confidencial · Next AI Tech LLC</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     S1-S10 · DATOS DE IDENTIFICACIÓN
+═══════════════════════════════════════════════════════════ -->
+<div class="screen" id="s1">
+  <div class="qs">
+    <div class="sc-content">
+      <div class="blk-tag">Identificación · 1 de 3</div>
+      <h2 class="q-title">¿Cómo te llamas y cuál es tu especialidad?</h2>
+      <p class="q-sub">Completa estos campos antes de iniciar el cuestionario.</p>
+      <div class="grid2">
+        <div class="fwrap">
+          <label class="flbl">Nombre del médico / titular</label>
+          <input class="finp" type="text" id="f-nombre" placeholder="Dr. / Dra. Nombre Apellido" autocomplete="name"/>
+        </div>
+        <div class="fwrap">
+          <label class="flbl">Especialidad / subespecialidad</label>
+          <input class="finp" type="text" id="f-especialidad" placeholder="Ej: Cirugía bariátrica, Cardiología..."/>
+        </div>
+      </div>
+    </div>
+    <div class="qfoot">
+      <button class="btn-back" onclick="goTo(0)">← Atrás</button>
+      <div style="display:flex;align-items:center;gap:14px"><span class="ctr">1 / 22</span>
+      <button class="btn-next" onclick="nxt2('f-nombre','nombre','f-especialidad','especialidad',2)">OK →</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="screen" id="s2">
+  <div class="qs">
+    <div class="sc-content">
+      <div class="blk-tag">Identificación · 2 de 3</div>
+      <h2 class="q-title">¿Cuál es tu consultorio y dónde está ubicado?</h2>
+      <div class="grid2">
+        <div class="fwrap">
+          <label class="flbl">Nombre del consultorio o clínica</label>
+          <input class="finp" type="text" id="f-practica" placeholder="Nombre de la práctica"/>
+        </div>
+        <div class="fwrap">
+          <label class="flbl">Ciudad y país</label>
+          <input class="finp" type="text" id="f-ciudad" placeholder="Ej: Bogotá, Colombia"/>
+        </div>
+        <div class="fwrap">
+          <label class="flbl">Años de experiencia en la especialidad</label>
+          <input class="finp" type="text" id="f-experiencia" placeholder="Ej: 12 años"/>
+        </div>
+        <div class="fwrap">
+          <label class="flbl">Personas en el equipo (aprox.)</label>
+          <input class="finp" type="text" id="f-equipo" placeholder="Ej: 5 personas"/>
+        </div>
+      </div>
+    </div>
+    <div class="qfoot">
+      <button class="btn-back" onclick="goTo(1)">← Atrás</button>
+      <div style="display:flex;align-items:center;gap:14px"><span class="ctr">2 / 22</span>
+      <button class="btn-next" onclick="nxtMultiField(['f-practica','f-ciudad','f-experiencia','f-equipo'],['practica','ciudad','experiencia','equipo'],3)">OK →</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="screen" id="s3">
+  <div class="qs">
+    <div class="sc-content">
+      <div class="blk-tag">Identificación · 3 de 3</div>
+      <h2 class="q-title">¿Cómo nos contactamos contigo?</h2>
+      <div class="grid2">
+        <div class="fwrap">
+          <label class="flbl">Correo electrónico</label>
+          <input class="finp" type="email" id="f-email" placeholder="tu@correo.com" autocomplete="email"/>
+        </div>
+        <div class="fwrap">
+          <label class="flbl">Teléfono / WhatsApp</label>
+          <input class="finp" type="tel" id="f-telefono" placeholder="+57 300 000 0000"/>
+        </div>
+      </div>
+    </div>
+    <div class="qfoot">
+      <button class="btn-back" onclick="goTo(2)">← Atrás</button>
+      <div style="display:flex;align-items:center;gap:14px"><span class="ctr">3 / 22</span>
+      <button class="btn-next" onclick="nxtEmail(4)">OK →</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     BLOQUE 1 · LA PRÁCTICA Y SU CENTRO DE GRAVEDAD
+═══════════════════════════════════════════════════════════ -->
+<div class="screen" id="s4">
+  <div class="qs">
+    <div class="sc-content">
+      <div class="blk-tag">Bloque 1 de 7</div>
+      <div class="blk-intro">
+        <div class="blk-num">01</div>
+        <div class="blk-name">La Práctica y su Centro de Gravedad</div>
+        <div class="blk-tag2">¿Qué sostiene la operación del consultorio en el día a día? — Personas, áreas y dependencias críticas</div>
+      </div>
+    </div>
+    <div class="qfoot">
+      <button class="btn-back" onclick="goTo(3)">← Atrás</button>
+      <div style="display:flex;align-items:center;gap:14px"><span class="ctr">4 / 22</span>
+      <button class="btn-next" onclick="goTo(5)">Empezar →</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="screen" id="s5">
+  <div class="qs">
+    <div class="sc-content">
+      <div class="blk-tag">Bloque 1 · Selección múltiple</div>
+      <h2 class="q-title">¿Qué sostiene la práctica — y qué la sostiene demasiado?</h2>
+      <div class="insight"><strong>▸ Strategic Insight</strong>Toda práctica clínica tiene un centro de gravedad operacional. Cuando ese centro está muy concentrado en una persona — usualmente el médico titular o quien coordina pacientes — lo que parece fortaleza puede ser una vulnerabilidad: si esa persona no está, ¿qué sigue funcionando solo?</div>
+      <div class="opts-lbl">Selecciona todas las que apliquen</div>
+      <div class="opts" id="o-b1">
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Consulta médica (el médico titular)</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Coordinación de pacientes, agendamiento y front desk</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Equipo de apoyo clínico (enfermería, asistentes, técnicos)</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Relación con aseguradoras, seguros privados, CSS o pacientes particulares</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Atención del paciente por WhatsApp, llamadas y mensajes</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Coordinación con clínicas, hospitales o procedimientos externos</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Administración, facturación y control financiero</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Marketing, redes sociales, captación de pacientes y contenido educativo</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Personas clave con conocimiento clínico u operativo no documentado</div>
+      </div>
+    </div>
+    <div class="qfoot">
+      <button class="btn-back" onclick="goTo(4)">← Atrás</button>
+      <div style="display:flex;align-items:center;gap:14px"><span class="ctr">5 / 22</span>
+      <button class="btn-next" onclick="nxtM('o-b1','b1_areas',6)">OK →</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="screen" id="s6">
+  <div class="qs">
+    <div class="sc-content">
+      <div class="blk-tag">Bloque 1 · Reflexión</div>
+      <h2 class="q-title">Si alguna de esas áreas se desordena — ¿qué efecto en cadena genera sobre el resto?</h2>
+      <p class="q-sub">¿Hay alguna que, si fallara dos semanas, detendría todo lo demás?</p>
+      <textarea class="finp" id="f-b1r" placeholder="Comparte tu perspectiva con honestidad — no hay respuestas incorrectas."></textarea>
+    </div>
+    <div class="qfoot">
+      <button class="btn-back" onclick="goTo(5)">← Atrás</button>
+      <div style="display:flex;align-items:center;gap:14px"><span class="ctr">6 / 22</span>
+      <button class="btn-next" onclick="sv('f-b1r','b1_refl');goTo(7)">OK →</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     BLOQUE 2 · ENERGÍA OPERATIVA
+═══════════════════════════════════════════════════════════ -->
+<div class="screen" id="s7">
+  <div class="qs">
+    <div class="sc-content">
+      <div class="blk-tag">Bloque 2 de 7</div>
+      <div class="blk-intro">
+        <div class="blk-num">02</div>
+        <div class="blk-name">Energía Operativa vs. Valor Clínico</div>
+        <div class="blk-tag2">¿En qué se consume el tiempo del consultorio? — Lo urgente versus lo clínicamente importante</div>
+      </div>
+    </div>
+    <div class="qfoot">
+      <button class="btn-back" onclick="goTo(6)">← Atrás</button>
+      <div style="display:flex;align-items:center;gap:14px"><span class="ctr">7 / 22</span>
+      <button class="btn-next" onclick="goTo(8)">Empezar →</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="screen" id="s8">
+  <div class="qs">
+    <div class="sc-content">
+      <div class="blk-tag">Bloque 2 · Selección múltiple</div>
+      <h2 class="q-title">¿Qué consume más energía operativa — y qué valor real genera?</h2>
+      <div class="insight"><strong>▸ Strategic Insight</strong>En una práctica médica, cada hora que el titular o el equipo invierte resolviendo lo administrativo es una hora que no se invierte en pacientes, en resultados clínicos, o en construir el siguiente nivel de la práctica. La pregunta no es qué consume tiempo — sino cuánto valor clínico o estratégico genera realmente.</div>
+      <div class="opts-lbl">Selecciona todas las que apliquen</div>
+      <div class="opts" id="o-b2">
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Agendamiento y reagendamiento manual de citas y controles</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Recordatorios y confirmación de citas vía WhatsApp o llamada</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Seguimiento manual a pacientes en proceso o entre consultas</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Gestión de autorizaciones y trámites con aseguradoras o CSS</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Diligenciamiento manual de historia clínica, recetas y consentimientos</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Coordinación constante entre el equipo (asistentes, enfermería, especialistas)</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Errores u omisiones en documentación que generan retrabajo</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Falta de visibilidad sobre el estado real de cada paciente</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Exceso de mensajes, llamadas y consultas operativas fuera de horario</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Información dispersa entre Excel, WhatsApp, agenda física y software clínico</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Sobrecarga crónica en quien coordina pacientes o atiende el front desk</div>
+      </div>
+    </div>
+    <div class="qfoot">
+      <button class="btn-back" onclick="goTo(7)">← Atrás</button>
+      <div style="display:flex;align-items:center;gap:14px"><span class="ctr">8 / 22</span>
+      <button class="btn-next" onclick="nxtM('o-b2','b2_energia',9)">OK →</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="screen" id="s9">
+  <div class="qs">
+    <div class="sc-content">
+      <div class="blk-tag">Bloque 2 · Reflexión</div>
+      <h2 class="q-title">De todo lo que marcaste — ¿cuál tiene más costo real hoy?</h2>
+      <p class="q-sub">En tiempo clínico perdido, en experiencia del paciente, o en la capacidad del equipo de enfocarse en lo que realmente importa.</p>
+      <textarea class="finp" id="f-b2r" placeholder="Comparte tu perspectiva..."></textarea>
+    </div>
+    <div class="qfoot">
+      <button class="btn-back" onclick="goTo(8)">← Atrás</button>
+      <div style="display:flex;align-items:center;gap:14px"><span class="ctr">9 / 22</span>
+      <button class="btn-next" onclick="sv('f-b2r','b2_refl');goTo(10)">OK →</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     BLOQUE 3 · RUTA DEL PACIENTE
+═══════════════════════════════════════════════════════════ -->
+<div class="screen" id="s10">
+  <div class="qs">
+    <div class="sc-content">
+      <div class="blk-tag">Bloque 3 de 7</div>
+      <div class="blk-intro">
+        <div class="blk-num">03</div>
+        <div class="blk-name">Ruta del Paciente</div>
+        <div class="blk-tag2">¿Cómo se mueve el paciente desde el primer contacto hasta el seguimiento? — Captación · Consulta · Continuidad</div>
+      </div>
+    </div>
+    <div class="qfoot">
+      <button class="btn-back" onclick="goTo(9)">← Atrás</button>
+      <div style="display:flex;align-items:center;gap:14px"><span class="ctr">10 / 22</span>
+      <button class="btn-next" onclick="goTo(11)">Empezar →</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="screen" id="s11">
+  <div class="qs">
+    <div class="sc-content">
+      <div class="blk-tag">Bloque 3 · Selección múltiple</div>
+      <h2 class="q-title">¿En qué puntos de la ruta del paciente se pierde el flujo?</h2>
+      <div class="insight"><strong>▸ Strategic Insight</strong>Todo paciente recorre un camino: primer contacto → agendamiento → primera consulta → tratamiento → controles → seguimiento. Cada paso es un punto donde el paciente puede abandonar — y donde la práctica puede perder ingresos, continuidad clínica y resultados. La pregunta no es si se pierden pacientes — es dónde y por qué.</div>
+      <div class="opts-lbl">Selecciona todas las que apliquen</div>
+      <div class="opts" id="o-b3">
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Primer contacto (WhatsApp, web, redes, referidos) sin respuesta oportuna</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Pacientes que preguntan precio o info pero no agendan la primera consulta</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Recepción y validación inicial que depende de una persona específica</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Pacientes que agendan pero no llegan a la cita (no-shows recurrentes)</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Demoras en agendar estudios, exámenes o evaluaciones complementarias</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Resultados de estudios que no llegan o no se siguen a tiempo</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Autorizaciones con aseguradoras que se demoran o se pierden en limbo</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Seguimiento manual al paciente porque el sistema no avisa automáticamente</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Sistemas desconectados (historia clínica, WhatsApp, agenda, Excel)</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Procesos que funcionan porque "la coordinadora sabe cómo hacerlo"</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Conocimiento clínico u operativo que vive en la cabeza, no en protocolos escritos</div>
+      </div>
+    </div>
+    <div class="qfoot">
+      <button class="btn-back" onclick="goTo(10)">← Atrás</button>
+      <div style="display:flex;align-items:center;gap:14px"><span class="ctr">11 / 22</span>
+      <button class="btn-next" onclick="nxtM('o-b3','b3_ruta',12)">OK →</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="screen" id="s12">
+  <div class="qs">
+    <div class="sc-content">
+      <div class="blk-tag">Bloque 3 · Reflexión</div>
+      <h2 class="q-title">Si una persona clave no estuviera disponible dos semanas — ¿qué parte de la ruta del paciente sentiría más el impacto?</h2>
+      <p class="q-sub">¿Y cuántos pacientes calculas que se pierden hoy entre el primer contacto y el seguimiento sostenido?</p>
+      <textarea class="finp" id="f-b3r" placeholder="Comparte tu perspectiva..."></textarea>
+    </div>
+    <div class="qfoot">
+      <button class="btn-back" onclick="goTo(11)">← Atrás</button>
+      <div style="display:flex;align-items:center;gap:14px"><span class="ctr">12 / 22</span>
+      <button class="btn-next" onclick="sv('f-b3r','b3_refl');goTo(13)">OK →</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     BLOQUE 4 · FRICCIONES NORMALIZADAS
+═══════════════════════════════════════════════════════════ -->
+<div class="screen" id="s13">
+  <div class="qs">
+    <div class="sc-content">
+      <div class="blk-tag">Bloque 4 de 7 · Fricciones Normalizadas</div>
+      <h2 class="q-title">¿Qué fricciones ya se volvieron "normales" — aunque no deberían?</h2>
+      <div class="insight"><strong>▸ Strategic Insight</strong>La normalización de fricciones es uno de los fenómenos más costosos en una práctica clínica. Lo que empezó como un problema temporal se convierte en parte del paisaje. Y ese costo se paga en pacientes perdidos, en resultados clínicos peores, y en un equipo agotado que ya no lo nota.</div>
+      <div class="opts-lbl">Selecciona todas las que apliquen</div>
+      <div class="opts" id="o-b4">
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Retrasos recurrentes en los mismos puntos del proceso clínico o administrativo</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Pacientes que se pierden entre consultas por falta de seguimiento activo</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Errores u omisiones en historia clínica, recetas o consentimientos que se repiten</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Información clínica difícil de encontrar cuando se necesita en consulta</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Actividades administrativas que consumen tiempo sin generar valor clínico</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Procesos que "siempre han sido así" aunque nadie sabe bien por qué</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Sobrecarga crónica que el equipo ya asume como normal</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Recordatorios y controles que dependen de que alguien se acuerde de hacerlos</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Pacientes que abandonan el seguimiento sin que se note a tiempo</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Glosas o devoluciones de aseguradoras que se repiten por las mismas causas</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Reclamos o quejas de pacientes que se repiten pero no se sistematizan</div>
+      </div>
+      <div style="margin-top:16px">
+        <label class="flbl">¿Cuál está frenando más la práctica — y cuánto tiempo lleva sin resolverse? (opcional)</label>
+        <textarea class="finp" id="f-b4r" style="min-height:80px" placeholder="Comparte tu perspectiva..."></textarea>
+      </div>
+    </div>
+    <div class="qfoot">
+      <button class="btn-back" onclick="goTo(12)">← Atrás</button>
+      <div style="display:flex;align-items:center;gap:14px"><span class="ctr">13 / 22</span>
+      <button class="btn-next" onclick="nxtM('o-b4','b4_fricciones',14);sv('f-b4r','b4_refl')">OK →</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     BLOQUE 5 · VISIBILIDAD CLÍNICA
+═══════════════════════════════════════════════════════════ -->
+<div class="screen" id="s14">
+  <div class="qs">
+    <div class="sc-content">
+      <div class="blk-tag">Bloque 5 de 7 · Visibilidad Clínica y Decisiones</div>
+      <h2 class="q-title">¿Qué no pueden ver — y qué decisiones pagan el costo de esa opacidad?</h2>
+      <div class="insight"><strong>▸ Strategic Insight</strong>La visibilidad clínica y operativa es lo que separa las prácticas que reaccionan de las que anticipan. Cuando los datos del paciente y del consultorio existen pero no están consolidados, las decisiones se toman con información parcial — y los pacientes en riesgo pasan desapercibidos.</div>
+      <div class="opts-lbl">Selecciona todas las que apliquen</div>
+      <div class="opts" id="o-b5">
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Estado real del flujo de pacientes (cuántos en agenda, en seguimiento, en espera)</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Pacientes en riesgo de abandono o que llevan tiempo sin volver</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Adherencia del paciente al tratamiento o al plan indicado</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Tasa de conversión primer contacto → primera consulta → seguimiento</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Tiempos reales de cada etapa (respuesta al paciente, agendamiento, atención)</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Productividad y carga real del equipo (consultas atendidas, tiempos, ocupación)</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Rentabilidad por tipo de consulta, aseguradora, canal de captación o servicio</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Resultados clínicos consolidados de los pacientes a lo largo del tiempo</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>NPS, satisfacción del paciente, reseñas activas vs. negativas</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>KPIs estratégicos consolidados sin construirlos manualmente cada mes</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Proyección de demanda, agenda y flujo de caja a 3–6 meses</div>
+      </div>
+      <div style="margin-top:16px">
+        <label class="flbl">Cuando esa visibilidad falta — ¿cómo termina afectando tus decisiones? (opcional)</label>
+        <textarea class="finp" id="f-b5r" style="min-height:80px" placeholder="¿Se toman con información incompleta, se retrasan, o hay cosas que no se pueden anticipar a tiempo?"></textarea>
+      </div>
+    </div>
+    <div class="qfoot">
+      <button class="btn-back" onclick="goTo(13)">← Atrás</button>
+      <div style="display:flex;align-items:center;gap:14px"><span class="ctr">14 / 22</span>
+      <button class="btn-next" onclick="nxtM('o-b5','b5_visibilidad',15);sv('f-b5r','b5_refl')">OK →</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     BLOQUE 6 · CONTINUIDAD Y SEGUIMIENTO
+═══════════════════════════════════════════════════════════ -->
+<div class="screen" id="s15">
+  <div class="qs">
+    <div class="sc-content">
+      <div class="blk-tag">Bloque 6 de 7 · Continuidad y Seguimiento</div>
+      <h2 class="q-title">¿Cómo se sostiene el seguimiento del paciente — y dónde se rompe?</h2>
+      <div class="insight"><strong>▸ Strategic Insight</strong>En medicina, el valor clínico real no se entrega solo en la consulta — se entrega en la continuidad. El paciente que vuelve, que sigue el tratamiento, que mantiene el vínculo con la práctica, es el que obtiene mejores resultados y el que se convierte en referidor natural.</div>
+      <div class="opts-lbl">Selecciona todas las que apliquen</div>
+      <div class="opts" id="o-b6">
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>El agendamiento de controles depende de que el paciente lo solicite por sí mismo</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>No hay sistema activo que alerte cuando un paciente no asiste a su control</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Pacientes que dejan de venir y nadie se da cuenta hasta meses después</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Adherencia al tratamiento o al plan indicado sin trazabilidad confiable</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Acompañamiento entre consultas inconsistente o únicamente reactivo</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Resultados clínicos del paciente que no se consolidan ni se miden longitudinalmente</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Complicaciones o deterioros que se detectan tarde por falta de monitoreo activo</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Encuestas de satisfacción y NPS que no se aplican sistemáticamente</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Falta de contenido educativo automatizado para pacientes (recordatorios, info, hábitos)</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Pacientes satisfechos que podrían referir más pero no se activan estratégicamente</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Casos de éxito clínico que no se documentan ni se comunican</div>
+      </div>
+      <div style="margin-top:16px">
+        <label class="flbl">Si pudieras saber en tiempo real cuáles pacientes están en riesgo — ¿qué cambiaría? (opcional)</label>
+        <textarea class="finp" id="f-b6r" style="min-height:80px" placeholder="Comparte tu perspectiva..."></textarea>
+      </div>
+    </div>
+    <div class="qfoot">
+      <button class="btn-back" onclick="goTo(14)">← Atrás</button>
+      <div style="display:flex;align-items:center;gap:14px"><span class="ctr">15 / 22</span>
+      <button class="btn-next" onclick="nxtM('o-b6','b6_continuidad',16);sv('f-b6r','b6_refl')">OK →</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     BLOQUE 7 · VISIÓN Y CRECIMIENTO
+═══════════════════════════════════════════════════════════ -->
+<div class="screen" id="s16">
+  <div class="qs">
+    <div class="sc-content">
+      <div class="blk-tag">Bloque 7 de 7 · Visión y Crecimiento</div>
+      <h2 class="q-title">¿Qué necesita evolucionar — antes de que el crecimiento lo exija?</h2>
+      <div class="insight"><strong>▸ Strategic Insight</strong>Las prácticas clínicas que escalan bien construyen antes la infraestructura para sostener ese crecimiento sin que todo se rompa, sin que la calidad caiga, y sin quemar al equipo. La diferencia entre crecer con estructura y crecer en caos está en lo que se construyó antes de la demanda.</div>
+      <div class="opts-lbl">Selecciona todas las que apliquen</div>
+      <div class="opts" id="o-b7">
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Operación más estructurada, menos dependiente de personas clave</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Captación de pacientes y conversión automatizadas (primer contacto → primera consulta)</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Ruta del paciente protocolizada y trazable de principio a fin</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Experiencia del paciente más consistente, personalizada e inteligente</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Procesos administrativos repetitivos automatizados (autorizaciones, recordatorios, facturación)</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Historia clínica electrónica y documentación clínica integrada</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Seguimiento del paciente activo y proactivo, no reactivo</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Datos clínicos y operativos accesibles, accionables y en tiempo real</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Coordinación y visibilidad entre todo el equipo, sin fricciones</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Capacidad de tomar decisiones con velocidad y respaldo en datos</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Casos de éxito documentados que alimenten marketing y captación orgánica</div>
+        <div class="opt" onclick="tog(this)"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Capacidad de abrir segunda sede, sumar otro médico, o escalar el modelo</div>
+      </div>
+      <div style="margin-top:16px">
+        <label class="flbl">Si esa evolución ocurriera en 12 meses — ¿qué cambiaría en tu día a día? (opcional)</label>
+        <textarea class="finp" id="f-b7r" style="min-height:80px" placeholder="¿Qué dejaría de consumirte tiempo? ¿Qué estaría diferente en el equipo, los pacientes y los resultados?"></textarea>
+      </div>
+    </div>
+    <div class="qfoot">
+      <button class="btn-back" onclick="goTo(15)">← Atrás</button>
+      <div style="display:flex;align-items:center;gap:14px"><span class="ctr">16 / 22</span>
+      <button class="btn-next" onclick="nxtM('o-b7','b7_vision',17);sv('f-b7r','b7_refl')">OK →</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     PRIORIZACIÓN FINAL
+═══════════════════════════════════════════════════════════ -->
+<div class="screen" id="s17">
+  <div class="qs">
+    <div class="sc-content">
+      <div class="blk-tag">Última pregunta · Priorización</div>
+      <h2 class="q-title">Si tuvieras que priorizar UN frente para los próximos 6 meses — ¿cuál sería?</h2>
+      <p class="q-sub">Esta respuesta calibra el roadmap de tu diagnóstico. Solo una opción.</p>
+      <div class="opts" id="o-prior">
+        <div class="opt radio" onclick="radio(this,'o-prior')"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Operación y dependencias del equipo</div>
+        <div class="opt radio" onclick="radio(this,'o-prior')"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Ruta del paciente y captación</div>
+        <div class="opt radio" onclick="radio(this,'o-prior')"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Fricciones administrativas y autorizaciones</div>
+        <div class="opt radio" onclick="radio(this,'o-prior')"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Visibilidad clínica y datos en tiempo real</div>
+        <div class="opt radio" onclick="radio(this,'o-prior')"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Continuidad y seguimiento del paciente</div>
+        <div class="opt radio" onclick="radio(this,'o-prior')"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Crecimiento, escala y nueva infraestructura</div>
+        <div class="opt radio" onclick="radio(this,'o-prior')"><div class="chk"><svg width="11" height="8" viewBox="0 0 11 8" fill="none"><path d="M1 4L4 7L10 1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>No estoy seguro/a — quiero que el diagnóstico me lo diga</div>
+      </div>
+    </div>
+    <div class="qfoot">
+      <button class="btn-back" onclick="goTo(16)">← Atrás</button>
+      <div style="display:flex;align-items:center;gap:14px"><span class="ctr">22 / 22</span>
+      <button class="btn-next" id="btnSend" onclick="send()">Enviar diagnóstico →</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     S18 · CTA CLOSING (del documento)
+═══════════════════════════════════════════════════════════ -->
+<div class="screen" id="s18">
+  <div class="cta-screen">
+    <div class="cta-mapped">Lo que acabamos de mapear juntos</div>
+    <h2 class="cta-title">Todo lo que describiste tiene nombre,<br>tiene costo, y tiene <em>solución estructurada.</em></h2>
+    <p class="cta-sub">Los procesos que dependen de personas, las fricciones normalizadas, los pacientes que se pierden en el camino, la información clínica que no se ve en tiempo real — todo eso puede resolverse.</p>
+
+    <div class="cta-pillars">
+      <div class="cta-pillar">
+        <div class="cta-pillar-name">Fricción Operacional</div>
+        <div class="cta-pillar-arrow">→ Se puede estructurar, automatizar y liberar.</div>
+      </div>
+      <div class="cta-pillar">
+        <div class="cta-pillar-name">Opacidad Clínica</div>
+        <div class="cta-pillar-arrow">→ Se puede integrar, visualizar y anticipar.</div>
+      </div>
+      <div class="cta-pillar">
+        <div class="cta-pillar-name">Límite de Escala</div>
+        <div class="cta-pillar-arrow">→ Se puede diseñar para el siguiente nivel.</div>
+      </div>
+    </div>
+
+    <p class="cta-question">La pregunta no es si estas fricciones existen.<br><em>La pregunta es si van a seguir pagando su costo en silencio — o si este es el momento de convertirlas en una ventaja competitiva clínica.</em></p>
+
+    <div class="cta-steps">
+      <div class="cta-step">
+        <div class="cta-step-num">01</div>
+        <div class="cta-step-name">Síntesis</div>
+        <div class="cta-step-desc">Mapa estratégico de fricciones y oportunidades de tu práctica.</div>
+      </div>
+      <div class="cta-step">
+        <div class="cta-step-num">02</div>
+        <div class="cta-step-name">Mapa de IA</div>
+        <div class="cta-step-desc">Soluciones concretas de IA para los cuellos de botella reales.</div>
+      </div>
+      <div class="cta-step">
+        <div class="cta-step-num">03</div>
+        <div class="cta-step-name">Roadmap</div>
+        <div class="cta-step-desc">Quick wins, mediano plazo y visión de escalabilidad clínica.</div>
+      </div>
+      <div class="cta-step">
+        <div class="cta-step-num">04</div>
+        <div class="cta-step-name">Propuesta</div>
+        <div class="cta-step-desc">Alcance, metodología, inversión y retorno esperado.</div>
+      </div>
+    </div>
+
+    <a href="https://nextaitech.com" class="btn-cta">Agendar presentación del diagnóstico <span class="arr">↗</span></a>
+    <div class="cta-footer">NEXT AI TECH LLC  ·  nextaitech.com  ·  DOCUMENTO CONFIDENCIAL  ·  2026</div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+//  ⚙️ CONFIGURACIÓN
+// ============================================================
+const SHEETS_URL = "https://script.google.com/macros/s/AKfycbxgZ5xxbDNBskG9nGlB1iMGGOdyUzrwcgFHXpHDI48whPtSVQixUOEG2GGV0-SscFLImA/exec"; // ver SETUP.md
+const FORM_ID    = "universal-medico-v1";
+// ============================================================
+
+const A = {};
+let cur = 0;
+const TOTAL = 22;
+
+function goTo(n){
+  document.getElementById('s'+cur).classList.remove('active');
+  document.getElementById('s'+n).classList.add('active');
+  cur = n;
+  document.getElementById('prog').style.width = Math.min(Math.round(n/18*100),100)+'%';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// Validaciones
+function nxt(id,key,next){
+  const v=document.getElementById(id).value.trim();
+  if(!v){toast('Por favor completa este campo.',1);return;}
+  A[key]=v;
+  if(key==='nombre') document.getElementById('ty-n') && (document.getElementById('ty-n').textContent=v.split(' ').slice(-2).join(' '));
+  goTo(next);
+}
+
+function nxt2(id1,key1,id2,key2,next){
+  const v1=document.getElementById(id1).value.trim();
+  const v2=document.getElementById(id2).value.trim();
+  if(!v1){toast('Por favor completa tu nombre.',1);return;}
+  if(!v2){toast('Por favor completa tu especialidad.',1);return;}
+  A[key1]=v1; A[key2]=v2; goTo(next);
+}
+
+function nxtMultiField(ids,keys,next){
+  const v=document.getElementById(ids[0]).value.trim();
+  if(!v){toast('Por favor completa el nombre del consultorio.',1);return;}
+  ids.forEach((id,i)=>{ A[keys[i]]=document.getElementById(id).value.trim(); });
+  goTo(next);
+}
+
+function nxtEmail(next){
+  const v=document.getElementById('f-email').value.trim();
+  if(!v||!v.includes('@')){toast('Por favor ingresa un email válido.',1);return;}
+  A.email=v;
+  A.telefono=document.getElementById('f-telefono').value.trim();
+  goTo(next);
+}
+
+function tog(el){el.classList.toggle('sel')}
+function radio(el,lid){
+  document.getElementById(lid).querySelectorAll('.opt').forEach(o=>o.classList.remove('sel'));
+  el.classList.add('sel');
+}
+function nxtM(lid,key,next){
+  const sel=[...document.getElementById(lid).querySelectorAll('.opt.sel')].map(o=>o.innerText.trim());
+  if(!sel.length){toast('Selecciona al menos una opción.',1);return;}
+  A[key]=sel.join(' | '); goTo(next);
+}
+function sv(id,key){
+  const el=document.getElementById(id);
+  if(el) A[key]=el.value.trim();
+}
+
+// Envío
+async function send(){
+  const prior=document.querySelector('#o-prior .opt.sel');
+  if(!prior){toast('Por favor selecciona una prioridad.',1);return;}
+  A.prioridad=prior.innerText.trim();
+
+  document.getElementById('ov').classList.add('show');
+  document.getElementById('btnSend').disabled=true;
+
+  const payload={timestamp:new Date().toISOString(),form_id:FORM_ID,...A};
+
+  try{
+    await fetch(SHEETS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
+    document.getElementById('ov').classList.remove('show');
+    goTo(18);
+  }catch(e){
+    document.getElementById('ov').classList.remove('show');
+    document.getElementById('btnSend').disabled=false;
+    toast('Error al enviar. Intenta de nuevo.',1);
+  }
+}
+
+function toast(msg,err=0){
+  const t=document.getElementById('toast');
+  t.textContent=(err?'⚠ ':'✓ ')+msg;
+  t.className='toast show'+(err?' err':'');
+  setTimeout(()=>t.classList.remove('show'),3500);
+}
+
+document.querySelectorAll('.finp:not(textarea):not(select)').forEach(inp=>{
+  inp.addEventListener('keydown',e=>{
+    if(e.key==='Enter'){const b=inp.closest('.qs')?.querySelector('.btn-next');if(b)b.click();}
+  });
+});
+</script>
+</body>
+</html>
