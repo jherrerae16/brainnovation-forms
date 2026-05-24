@@ -454,9 +454,112 @@ https://docs.google.com/spreadsheets/d/${SpreadsheetApp.getActiveSpreadsheet().g
 
   try {
     MailApp.sendEmail(NOTIFY_EMAIL, subject, body);
+    console.log("✓ Email enviado a:", NOTIFY_EMAIL);
   } catch(e) {
-    console.log("Email error:", e);
+    console.error("✗ Email error:", e, "— destino:", NOTIFY_EMAIL,
+                  "— cuota restante:", MailApp.getRemainingDailyQuota());
   }
+}
+
+
+// ============================================================
+//  TESTING · Ejecuta estas funciones desde el editor de
+//  Apps Script (selecciona la función arriba y dale ▶️ Ejecutar)
+//  para verificar que todo funciona SIN tener que llenar el form.
+//
+//  La PRIMERA vez te va a pedir autorizar permisos de Drive,
+//  Documents, Sheets y Gmail — acepta todos.
+// ============================================================
+
+// ── Test 1: pipeline completo (Sheet + Doc + Email) ─────────
+function testFullPipeline() {
+  const dummy = {
+    timestamp: new Date().toISOString(),
+    form_id: "universal-medico-v1",
+    nombre: "TEST · Dr. Prueba",
+    especialidad: "Cardiología",
+    practica: "Clínica de Prueba",
+    ciudad: "Ciudad de México, México",
+    experiencia: "10 años",
+    equipo: "5 personas",
+    email: "test@brainnovation.ai",
+    telefono: "+52 555 000 0000",
+    b1_areas: "Recepción | Agenda médica | Facturación",
+    b1_refl: "Si la agenda se cae, todo el flujo de pacientes se detiene.",
+    b2_energia: "Llamadas de seguimiento | Coordinación con laboratorio",
+    b2_refl: "El seguimiento manual es lo más costoso.",
+    b3_ruta: "Entre primera consulta y estudios complementarios.",
+    b3_refl: "La recepcionista — sin ella se rompe la agenda.",
+    b4_fricciones: "Re-agendamientos | Pacientes que no contestan",
+    b4_refl: "Los re-agendamientos llevan 8 meses sin resolverse.",
+    b5_visibilidad: "Tasa real de no-show | Tiempo de espera por paciente",
+    b5_refl: "Sin esa data, decido por intuición.",
+    b6_continuidad: "Por WhatsApp manual de la asistente.",
+    b6_refl: "Podría priorizar a los pacientes en riesgo real.",
+    b7_vision: "Sistema de recordatorios automatizados.",
+    b7_refl: "Liberaría 2 horas diarias del equipo.",
+    prioridad: "Automatizar el seguimiento post-consulta"
+  };
+
+  console.log("▶ Iniciando test pipeline completo...");
+  console.log("  Email destino:", NOTIFY_EMAIL);
+  console.log("  Folder ID:", DRIVE_FOLDER_ID);
+
+  try {
+    const docUrl = processSubmission(dummy);
+    console.log("✓ Pipeline OK");
+    console.log("  Doc generado:", docUrl);
+    return docUrl;
+  } catch(e) {
+    console.error("✗ Pipeline falló:", e);
+    console.error("  Stack:", e.stack);
+    throw e;
+  }
+}
+
+// ── Test 2: solo el Doc (aísla si el problema es Drive) ─────
+function testDocOnly() {
+  console.log("▶ Probando solo generación de Doc...");
+  console.log("  Folder ID:", DRIVE_FOLDER_ID);
+
+  // Verifica que la carpeta exista y sea accesible
+  try {
+    const folder = DriveApp.getFolderById(DRIVE_FOLDER_ID);
+    console.log("✓ Carpeta accesible:", folder.getName());
+  } catch(e) {
+    console.error("✗ No se puede acceder a la carpeta:", e);
+    console.error("  Verifica que el ID sea correcto y que tu cuenta tenga acceso.");
+    throw e;
+  }
+
+  const dummy = {
+    timestamp: new Date().toISOString(),
+    form_id: "universal-medico-v1",
+    nombre: "TEST · Solo Doc",
+    practica: "Test",
+    prioridad: "Test de generación de documento"
+  };
+  const url = generateDoc(dummy);
+  console.log("✓ Doc creado:", url);
+  return url;
+}
+
+// ── Test 3: solo el email ───────────────────────────────────
+function testEmailOnly() {
+  console.log("▶ Probando solo envío de email...");
+  console.log("  Destino:", NOTIFY_EMAIL);
+  console.log("  Cuota restante hoy:", MailApp.getRemainingDailyQuota());
+
+  sendNotification({
+    nombre: "TEST",
+    practica: "Email Test",
+    email: "test@test.com",
+    form_id: "test",
+    b7_prioridad: "Verificar email",
+    timestamp: new Date().toISOString()
+  }, "https://docs.google.com/document/d/test");
+
+  console.log("✓ Email enviado (revisa la bandeja de", NOTIFY_EMAIL, ")");
 }
 
 
